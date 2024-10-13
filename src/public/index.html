@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade" /> <!-- google API local testing -->
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script>
+        async function handleToken(resp) {
+            token = resp.credential;
+            localStorage.setItem('credential', token);
+            try {
+                const resp = await fetch('/api/auth-test', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (!resp.ok) {
+                    const text = await resp.text();
+                    throw new Error(`HTTP error! status: ${resp.status} message: ${text}`);
+                }
+                console.log(await resp.text());
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('main').style.display = '';
+
+            } catch (error) {
+                console.error('Token validation error: ', error);
+                alert('Token validation error');
+            }
+        }
+    </script>
+
+    <title>Login</title>
+</head>
+<body>
+    <div id="login" class="login-container">
+        <h1>Login</h1>
+        <div id="g_id_onload"
+            data-callback="handleToken"
+            data-client_id="146920155287-ms992l28klrd1p725kedm7l4i4p38kd3.apps.googleusercontent.com"
+            data-auto_select="true"
+            data-use_fedcm_for_prompt="true">
+        </div>
+    </div>
+    </div>
+    <div id="main" style="display: none;">
+        <h1>Main</h1>
+    </div>
+</body>
+</html>
