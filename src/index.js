@@ -4,7 +4,7 @@ import path from 'path';
 import { createServer } from 'http';
 
 import api from './routes/api.js';
-import { checkToken } from './auth.js'
+import { checkToken } from './middleware/auth.js'
 
 
 const app = express();
